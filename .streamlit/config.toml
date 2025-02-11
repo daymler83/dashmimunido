@@ -1,0 +1,10 @@
+[server]
+enableCORS = false
+enableXsrfProtection = false
+baseUrlPath = "/projects/dashmimunido"
+
+[theme]
+base="light"
+primaryColor="#9900ad"
+secondaryBackgroundColor="F5F5F5"
+textColor="#000002"

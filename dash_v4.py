@@ -8,10 +8,22 @@ from streamlit_extras.metric_cards import style_metric_cards
 import toml
 #st.set_option('deprecation.showPyplotGlobalUse', False)
 import plotly.graph_objs as go
+import os
 
 
 # Cargar configuraciones desde config.toml
-config = toml.load("config.toml")
+#config = toml.load("config.toml")
+
+# Get the absolute path to the config file
+base_dir = os.path.dirname(os.path.abspath(__file__))
+config_path = os.path.join(base_dir, ".streamlit", "config.toml")
+
+# Load the config file
+config = toml.load(config_path)
+
+
+# Get the base URL path from config
+base_url_path = config.get("server", {}).get("baseUrlPath", "/")
 
 # Configuración inicial del dashboard
 st.set_page_config(
@@ -23,6 +35,7 @@ st.set_page_config(
 
 
 st.header(config.get("header", "INDICATORS: trends and predictions"))
+
 
 #all graphs we use custom css not streamlit 
 theme_plotly = None 
@@ -67,12 +80,24 @@ activity = st.sidebar.selectbox(
 
 # Establecer la selección por defecto a las 4 dimensiones y 4 indicadores
 default_dimensions = ["Strategic", "Output", "Exports", "Investment"]  # Las 4 dimensiones por defecto
-default_indicators = [
-    "MVA (Manufacturing Value Added), constant 2015 USD",
-    "MVA Growth Rate",
-    "Manufactured Exports per Employee",
-    "Gross fixed capital formation"
-]  # Los 4 indicadores por defecto
+
+
+# Definir los indicadores por defecto según el sector
+sector_indicators = {
+    "Manufacturing": [
+        "MVA (Manufacturing Value Added), constant 2015 USD",
+        "MVA Growth Rate",
+        "Manufactured Exports per Employee",
+        "Gross fixed capital formation"
+    ],
+    "Mining": [
+        "Gross fixed capital formation",
+        "IIP"
+    ]
+}
+
+# Obtener los indicadores predeterminados según el sector seleccionado
+default_indicators = sector_indicators.get(sector, [])
 
 # Selección de dimensiones con valores por defecto
 dimension = st.sidebar.multiselect(
@@ -87,15 +112,19 @@ if dimension:
     # Filtrar variables en función de las dimensiones seleccionadas
     variable_options = df[df["Dimension"].isin(dimension)]["variableName"].unique()
 
+    # Obtener indicadores por defecto según el sector seleccionado
+    default_indicators = sector_indicators.get(sector, [])
+
     # Selección de hasta 4 indicadores con valores por defecto
     variable = st.sidebar.multiselect(
         "SELECT UP TO FOUR INDICATORS",
         options=variable_options,
-        default=default_indicators,  # Indicadores por defecto
+        default=[ind for ind in default_indicators if ind in variable_options],  # Filtrar solo los que existen en los datos
         max_selections=4
     )
 else:
     variable = []
+
 
 # Filtrar solo si hay dimensiones e indicadores seleccionados
 if dimension and variable:
