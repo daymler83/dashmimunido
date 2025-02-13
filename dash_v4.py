@@ -85,14 +85,14 @@ default_dimensions = ["Strategic", "Output", "Exports", "Investment"]  # Las 4 d
 # Definir los indicadores por defecto según el sector
 sector_indicators = {
     "Manufacturing": [
-        "MVA (Manufacturing Value Added), constant 2015 USD",
-        "MVA Growth Rate",
-        "Manufactured Exports per Employee",
-        "Gross fixed capital formation"
+        "Manufacturing value added (MVA) per capita",
+        "MVA annual growth rate",
+        "Manufactured exports per employee",
+        "Total investment as a percentage of GDP"
     ],
     "Mining": [
-        "Gross fixed capital formation",
-        "IIP"
+        "Total investment as a percentage of GDP",
+        "Index of industrial production"
     ]
 }
 
@@ -149,7 +149,7 @@ variable_rename_map = {
     "MVA (Manufacturing Value Added), constant 2015 USD": "Manufacturing value added(MVA), constant 2015 USD",
     "MVA Growth Rate": "MVA annual growth rate (%)",
     "Manufactured Exports per Employee": "Exports per employee",
-    "Gross fixed capital formation": "Gross fixed capital formation"
+    "Total investment as a percentage of output": "Total investment as a percentage of output"
 }
 
 # Reemplazar nombres en la selección por defecto
